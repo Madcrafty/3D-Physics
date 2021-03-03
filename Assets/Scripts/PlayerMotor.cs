@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMotor : MonoBehaviour
+public class PlayerMotor : Entity
 {
-    public float speed = 3.0f;
+    //public float speed = 3.0f;
     public float jumpForce = 10.0f;
     public float cyoteTime = 0.0f;
     public float lookSpeed = 2.0f;
@@ -22,9 +22,10 @@ public class PlayerMotor : MonoBehaviour
     private float rotationX;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        base.Start();
+        rb = transform.GetChild(1).GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
         cam = transform.GetChild(0).GetComponent<Camera>();
         gun = transform.GetChild(0).GetChild(0).GetComponent<Gun>();
@@ -35,6 +36,7 @@ public class PlayerMotor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        transform.position = rb.position;
         rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
         rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
         cam.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
@@ -79,5 +81,17 @@ public class PlayerMotor : MonoBehaviour
             elapsedCyoteTime = 0;
         }
 
+    }
+    public override void SetActive(bool toggle)
+    {
+        base.SetActive(toggle);
+    }
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+    }
+    public override void Respawn()
+    {
+        base.Respawn();
     }
 }
