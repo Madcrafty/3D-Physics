@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Scripts.Movement
 {
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovement : Entity
     {
         #region PUBLIC FIELDS
+        [Header(header: "Aim Settings")]
+        public float lookSpeed = 2.0f;
 
         [Header(header: "Walk / Run Settings")]
         public float walkSpeed;
@@ -27,6 +30,9 @@ namespace Scripts.Movement
         [Header(header: "Raycast Distance")]
         public float raycastDistance;
 
+        [Header(header: "Panel")]
+        public Image Panel;
+
         #endregion
 
         #region PRIVATE FIELDS
@@ -41,6 +47,9 @@ namespace Scripts.Movement
         private float m_distanceFromPlayerToGround;
         private bool m_playerIsGrounded;
         private bool m_playerJumpStarted;
+        private Camera cam;
+        private float rotationX;
+        private float lookXLimit = 90.0f;
         #endregion
 
         #region jump presets
@@ -51,11 +60,13 @@ namespace Scripts.Movement
 
         #region MONODEVELOP ROUTINES
 
-        private void Start()
+        protected override void Start()
         {
             #region initializing components
 
+            base.Start();
             m_rb = GetComponent<Rigidbody>();
+            cam = transform.GetChild(0).GetComponent<Camera>();
 
             #endregion
             #region get layer mask [env ground layer]
@@ -84,9 +95,18 @@ namespace Scripts.Movement
 
             #endregion
 
+            #region Camera Movement
+
+            rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
+            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
+            cam.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+            transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+
+            #endregion
+
             #region play jump input
 
-            playerIsJumping = Input.GetKeyDown(KeyCode.Space);
+            playerIsJumping = Input.GetButton("Jump");
 
             #endregion
             #region Shift To Change Speed
@@ -124,6 +144,15 @@ namespace Scripts.Movement
 
             #endregion
         }
+        public override void TakeDamage(float damage)
+        {
+            base.TakeDamage(damage);
+            Panel.color = new Color(Panel.color.r, Panel.color.g, Panel.color.b, 1-(hp / maxHealth));
+        }
+        public override void RagdollState(bool toggle)
+        {
+
+        }
         #endregion
 
         #region HELPER ROUTINES
@@ -134,7 +163,7 @@ namespace Scripts.Movement
         /// </summary>
         /// <param name="jumpForce"></param>
         /// <param name="forceMode"></param>
-        
+
         private void PlayerJumps(float jumpForce, ForceMode forceMode)
         {
             m_rb.AddForce(jumpForce * m_rb.mass * Time.deltaTime * Vector3.up, forceMode);

@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMotor : Entity
 {
     //public float speed = 3.0f;
+    public float speed = 1.0f;
     public float jumpForce = 10.0f;
     public float cyoteTime = 0.0f;
     public float lookSpeed = 2.0f;
@@ -14,6 +15,7 @@ public class PlayerMotor : Entity
     private Camera cam;
     private Gun gun;
     private float lookXLimit = 90.0f;
+
     
     private bool grounded;
     private float elapsedCyoteTime = 0;

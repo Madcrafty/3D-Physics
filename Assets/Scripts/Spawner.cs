@@ -11,7 +11,7 @@ public class Spawner : MonoBehaviour
     private int iter = 0;
     private float elapsedTime = 0;
     private bool isEnemy = false;
-    private void Awake()
+    private void Start()
     {
         if (obj.GetComponent<Enemy>() != null)
         {

@@ -26,10 +26,6 @@ public class Ragdoll : MonoBehaviour
             //enemy.enabled = !value;
             entity.SetActive(!value);
             //player.enabled = !value;
-            foreach(Rigidbody r in rigidbodies)
-            {
-                r.isKinematic = !value;
-            }
         }
     }
 
@@ -45,13 +41,12 @@ public class Ragdoll : MonoBehaviour
         Rigidbody[] tmp = GetComponentsInChildren<Rigidbody>();
         foreach (Rigidbody rb in tmp)
         {
-            rigidbodies.Add(rb);
+            if (rb != entity.GetComponent<Rigidbody>())
+            {
+                rigidbodies.Add(rb);
+            } 
         }
         //player = GetComponent<Player>();
-        foreach (Rigidbody r in rigidbodies)
-        {
-            r.isKinematic = true;
-        }
     }
 
     // Update is called once per frame
