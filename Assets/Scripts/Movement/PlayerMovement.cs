@@ -118,10 +118,14 @@ namespace Scripts.Movement
             #region compute player distance from ground
             //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * raycastDistance, Color.blue); 
             //added layermask for those dealing with complex ground objects.
-            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out m_hit, raycastDistance, m_groundLayerMask))
+            if (Physics.SphereCast(transform.position, 1.0f, transform.TransformDirection(Vector3.down), out m_hit, Mathf.Infinity, m_groundLayerMask))
             {
                 m_groundLocation = m_hit.point;
                 m_distanceFromPlayerToGround = transform.position.y - m_groundLocation.y;
+                if (m_distanceFromPlayerToGround >= 1.1f)
+                {
+                    playerIsJumping = false;
+                }
             }
             #endregion
         }
@@ -135,12 +139,13 @@ namespace Scripts.Movement
 
             #region apply single / double jump
 
-            m_playerIsGrounded = m_distanceFromPlayerToGround <= 1f;
+            m_playerIsGrounded = m_distanceFromPlayerToGround <= 1.1f;
 
             if (playerIsJumping && m_playerJumpStarted && (m_playerIsGrounded || MaxAllowJump > m_currentNumberOfJumpsMade))
                 StartCoroutine(ApplyJump());
 
-            if (m_playerIsGrounded) m_currentNumberOfJumpsMade = 0;
+            if (m_playerIsGrounded)
+                m_currentNumberOfJumpsMade = 0;
 
             #endregion
         }

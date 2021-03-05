@@ -44,15 +44,15 @@ public class Spawner : MonoBehaviour
                 }
                 if (tmp.activeSelf == false)
                 {
-                    tmp.SetActive(true);
                     tmp.transform.position = transform.position + transform.right * instance * 10;
+                    tmp.SetActive(true);
                     instance++;
                 }
                 else if (tmp.GetComponent<Ragdoll>().RagdollOn == true)
                 {
                     tmp.GetComponent<Enemy>().Respawn();
-                    tmp.SetActive(true);
                     tmp.transform.position = transform.position + transform.right * instance * 10;
+                    tmp.SetActive(true);
                     instance++;
                 }
                 // add whatever force
