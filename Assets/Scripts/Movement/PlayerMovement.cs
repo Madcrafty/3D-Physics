@@ -44,18 +44,20 @@ namespace Scripts.Movement
         private Vector3 m_groundLocation;
         private bool m_leftShiftPressed;
         private int m_groundLayerMask;
-        private float m_distanceFromPlayerToGround;
-        private bool m_playerIsGrounded;
-        private bool m_playerJumpStarted;
+        public float m_distanceFromPlayerToGround;
+        public bool m_playerIsGrounded;
+        public bool m_playerJumpStarted;
         private Camera cam;
         private float rotationX;
         private float lookXLimit = 90.0f;
+        private float healRate = 10.0f;
+        private float elapsedHitTime;
         #endregion
 
         #region jump presets
 
-        private const int MaxAllowJump = 2; //maximum allowed jumps
-        private int m_currentNumberOfJumpsMade; //current number of jumps processed
+        public const int MaxAllowJump = 2; //maximum allowed jumps
+        public int m_currentNumberOfJumpsMade; //current number of jumps processed
         #endregion
 
         #region MONODEVELOP ROUTINES
@@ -104,6 +106,20 @@ namespace Scripts.Movement
 
             #endregion
 
+            #region Health Regeneration
+            if (hp < maxHealth)
+            {
+                elapsedHitTime += Time.deltaTime;
+                hp += healRate * elapsedHitTime * Time.deltaTime;
+                Panel.color = new Color(Panel.color.r, Panel.color.g, Panel.color.b, 1 - (hp / maxHealth));
+            }
+            if (hp > maxHealth)
+            {
+                hp = maxHealth;
+                Panel.color = new Color(Panel.color.r, Panel.color.g, Panel.color.b, 1 - (hp / maxHealth));
+            }
+            #endregion
+
             #region play jump input
 
             playerIsJumping = Input.GetButton("Jump");
@@ -118,7 +134,7 @@ namespace Scripts.Movement
             #region compute player distance from ground
             //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * raycastDistance, Color.blue); 
             //added layermask for those dealing with complex ground objects.
-            if (Physics.SphereCast(transform.position, 1.0f, transform.TransformDirection(Vector3.down), out m_hit, Mathf.Infinity, m_groundLayerMask))
+            if (Physics.SphereCast(transform.position, 0.9f, transform.TransformDirection(Vector3.down), out m_hit, Mathf.Infinity))
             {
                 m_groundLocation = m_hit.point;
                 m_distanceFromPlayerToGround = transform.position.y - m_groundLocation.y;
@@ -149,15 +165,23 @@ namespace Scripts.Movement
 
             #endregion
         }
+        #region Base Entity Overrides
         public override void TakeDamage(float damage)
         {
             base.TakeDamage(damage);
-            Panel.color = new Color(Panel.color.r, Panel.color.g, Panel.color.b, 1-(hp / maxHealth));
+            elapsedHitTime = 0;
+        }
+        protected override void Die()
+        {
+            base.Die();
+            gm.GameOver();
         }
         public override void RagdollState(bool toggle)
         {
 
         }
+        #endregion
+
         #endregion
 
         #region HELPER ROUTINES

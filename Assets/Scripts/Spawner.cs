@@ -7,10 +7,12 @@ public class Spawner : MonoBehaviour
     public int pool = 0;
     public GameObject obj = null;
     public float rate = 1;
+    public bool active = true;
 
     private int iter = 0;
     private float elapsedTime = 0;
     private bool isEnemy = false;
+
     private void Start()
     {
         if (obj.GetComponent<Enemy>() != null)
@@ -29,52 +31,62 @@ public class Spawner : MonoBehaviour
 
     void Update()
     {
-        int instance = 0;
-        elapsedTime += Time.deltaTime;
-        if (isEnemy)
+        if (active)
         {
-            while (elapsedTime >= 1.0f / rate)
+            int instance = 0;
+            elapsedTime += Time.deltaTime;
+            if (isEnemy)
             {
-                elapsedTime -= 1.0f / rate;
-                GameObject tmp = transform.GetChild(iter).gameObject;
-                iter++;
-                if (iter >= transform.childCount)
+                while (elapsedTime >= 1.0f / rate)
                 {
-                    iter -= transform.childCount;
+                    elapsedTime -= 1.0f / rate;
+                    GameObject tmp = transform.GetChild(iter).gameObject;
+                    iter++;
+                    if (iter >= transform.childCount)
+                    {
+                        iter -= transform.childCount;
+                    }
+                    if (tmp.activeSelf == false)
+                    {
+                        tmp.transform.position = transform.position + transform.right * instance * 1;
+                        tmp.SetActive(true);
+                        instance++;
+                    }
+                    else if (tmp.GetComponent<Ragdoll>().RagdollOn == true)
+                    {
+                        tmp.transform.position = transform.position + transform.right * instance * 1;
+                        tmp.GetComponent<Enemy>().Respawn();
+                        tmp.SetActive(true);
+                        instance++;
+                    }
+                    // add whatever force
                 }
-                if (tmp.activeSelf == false)
+            }
+            else
+            {
+                while (elapsedTime >= 1.0f / rate)
                 {
-                    tmp.transform.position = transform.position + transform.right * instance * 10;
+                    elapsedTime -= 1.0f / rate;
+                    GameObject tmp = transform.GetChild(iter).gameObject;
+                    iter++;
+                    if (iter >= transform.childCount)
+                    {
+                        iter -= transform.childCount;
+                    }
                     tmp.SetActive(true);
+                    tmp.transform.position = transform.position + transform.right * instance * 1;
                     instance++;
+                    // add whatever force
                 }
-                else if (tmp.GetComponent<Ragdoll>().RagdollOn == true)
-                {
-                    tmp.GetComponent<Enemy>().Respawn();
-                    tmp.transform.position = transform.position + transform.right * instance * 10;
-                    tmp.SetActive(true);
-                    instance++;
-                }
-                // add whatever force
             }
         }
-        else
-        {
-            while (elapsedTime >= 1.0f / rate)
-            {
-                elapsedTime -= 1.0f / rate;
-                GameObject tmp = transform.GetChild(iter).gameObject;
-                iter++;
-                if (iter >= transform.childCount)
-                {
-                    iter -= transform.childCount;
-                }
-                tmp.SetActive(true);
-                tmp.transform.position = transform.position + transform.right * instance * 10;
-                instance++;
-                // add whatever force
-            }
-        }
-
+    }
+    public void SetRate(int newRate)
+    {
+        rate = newRate;
+    }
+    public void SetActiveState(bool newState)
+    {
+        active = newState;
     }
 }

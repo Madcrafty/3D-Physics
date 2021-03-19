@@ -8,12 +8,19 @@ public class SceneTrigger : MonoBehaviour
     public int sceneIndex;
     private void OnTriggerEnter(Collider other)
     {
-        SceneManager.LoadScene(sceneIndex);
-        Cursor.lockState = CursorLockMode.None;
+        if (other.name == "Player")
+        {
+            SceneManager.LoadScene(sceneIndex);
+            Cursor.lockState = CursorLockMode.None;
+        }
+
     }
     private void OnCollisionEnter(Collision collision)
     {
-        SceneManager.LoadScene(sceneIndex);
-        Cursor.lockState = CursorLockMode.None;
+        if (collision.transform.name == "Player")
+        {
+            SceneManager.LoadScene(sceneIndex);
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 }

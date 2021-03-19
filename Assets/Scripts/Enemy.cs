@@ -6,11 +6,11 @@ using UnityEngine.AI;
 
 public class Enemy : Entity
 {
-    [Header(header: "Target")]
+    [Header(header: "NavAgent Settings")]
     public Transform target;
-
-    [Header(header: "Move Speed")]
     public float speed = 1;
+    [Tooltip("path updates performed per second")]
+    public float updateRate = 10;
 
     [Header(header: "Points When Killed")]
     public int pointsWhenKilled = 10;
@@ -21,20 +21,30 @@ public class Enemy : Entity
     public float startupTime = 0.3f;
     public float endingLag = 0.4f;
 
+    [Header(header: "HUD Settings")]
+    [Tooltip("The seconds the HUD is active for, when this is hit")]
+    public float activeTimeOnHit = 3;
+
     [Header(header: "Debug")]
     public float distToTarget;
+    public bool wandering;
 
     private Canvas HUD = null;
     private Slider healthBar;
     private NavMeshAgent ai;
     private Animator animator;
     private bool atkInProgress = false;
+    private NavMeshPath path;
+    private float navUpdateTimer;
+    private float hudTimer;
 
     // Start is called before the first frame update
     protected override void Start()
     {
+        path = new NavMeshPath();
         base.Start();
         HUD = transform.GetChild(2).GetComponent<Canvas>();
+        HUD.enabled = false;
         animator = GetComponent<Animator>();
         ai = GetComponent<NavMeshAgent>();
         ai.speed = speed;
@@ -44,7 +54,31 @@ public class Enemy : Entity
     // Update is called once per frame
     void Update()
     {
-        ai.SetDestination(target.position);
+        navUpdateTimer += Time.deltaTime;
+        if (hudTimer > 0)
+        {
+            hudTimer -= Time.deltaTime;
+            if (hudTimer <= 0)
+            {
+                HUD.enabled = false;
+            }
+        }
+        
+        if (navUpdateTimer > 1/updateRate)
+        {
+            navUpdateTimer = 0;
+            ai.CalculatePath(target.position, path);
+            if (path.status != NavMeshPathStatus.PathPartial)
+            {
+                ai.SetDestination(target.position);
+                wandering = false;
+            }
+            else
+            {
+                ai.SetDestination(RandomNavSphere(transform.position, 10, -1));
+                wandering = true;
+            }
+        }
         animator.SetFloat("Forwards", speed * Time.fixedDeltaTime);
         distToTarget = Vector3.Magnitude(target.position - transform.position);
         if (distToTarget <= attackRange && target.GetComponent<HitDetector>() != null && !atkInProgress)
@@ -52,16 +86,37 @@ public class Enemy : Entity
             StartCoroutine(Attack());
         }
     }
+    public static Vector3 RandomNavSphere(Vector3 origin, float distance, int layermask)
+    {
+        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * distance;
+
+        randomDirection += origin;
+
+        NavMeshHit navHit;
+
+        NavMesh.SamplePosition(randomDirection, out navHit, distance, layermask);
+
+        return navHit.position;
+    }
     protected override void Die()
     {
+        if (!ragdoll.RagdollOn)
+        {
+            gm.AddScore(pointsWhenKilled);
+        }
         base.Die();
-        gm.AddScore(pointsWhenKilled);
+
     }
 
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        healthBar.value = hp / (float)maxHealth;
+        if (!ragdoll.RagdollOn)
+        {
+            hudTimer = activeTimeOnHit;
+            HUD.enabled = true;
+            healthBar.value = hp / (float)maxHealth;
+        }
     }
     public override void Respawn()
     {
@@ -73,7 +128,10 @@ public class Enemy : Entity
         base.SetActive(toggle);
         animator.enabled = toggle;
         ai.enabled = toggle;
-        HUD.enabled = toggle;
+        if (!toggle)
+        {
+            HUD.enabled = toggle;
+        }   
     }
     public override void RagdollState(bool toggle)
     {

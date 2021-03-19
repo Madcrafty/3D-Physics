@@ -31,8 +31,8 @@ public class Gun : MonoBehaviour
     {
         soundSource = GetComponent<AudioSource>();
         capacity = maxCapacity;
-        smoke = transform.GetChild(4).GetComponent<ParticleSystem>();
-        flash = transform.GetChild(5).GetComponent<ParticleSystem>();
+        smoke = transform.GetChild(2).GetChild(0).GetComponent<ParticleSystem>();
+        flash = transform.GetChild(2).GetChild(1).GetComponent<ParticleSystem>();
         chargeMeter = transform.GetChild(3).GetChild(0).GetComponent<Slider>();
         laser = GetComponent<LineRenderer>();
         barrel = transform.GetChild(2).GetComponent<Collider>();
@@ -83,7 +83,7 @@ public class Gun : MonoBehaviour
             smoke.Stop();
         }
     }
-    void ShootLaser()
+    public void ShootLaser()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -110,7 +110,7 @@ public class Gun : MonoBehaviour
         capacity -= shotCost;
         elapsedShootTime = 0;
     }
-    void ShootProjectile()
+    public void ShootProjectile()
     {
         GameObject tmp = Instantiate(projectile);
         tmp.transform.position = barrel.transform.position;
