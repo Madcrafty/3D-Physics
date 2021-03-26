@@ -19,9 +19,16 @@ public class Entity : MonoBehaviour
     {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         ragdoll = GetComponent<Ragdoll>();
-        foreach (Rigidbody rb in ragdoll.rigidbodies)
+        if (ragdoll.rigidbodies != null && ragdoll.rigidbodies.Count > 0)
         {
-            rb.gameObject.AddComponent<HitDetector>();
+            foreach (Rigidbody rb in ragdoll.rigidbodies)
+            {
+                rb.gameObject.AddComponent<HitDetector>();
+            }
+        }
+        else
+        {
+            gameObject.AddComponent<HitDetector>();
         }
         hp = maxHealth;
         RagdollState(false);
