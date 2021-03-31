@@ -2084,10 +2084,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  weakpointName: 
-  weakpointMod: 1
+  weakpointName: Head
+  weakpointMod: 2
   target: {fileID: 0}
   speed: 1
+  pathUpdateRate: 2
+  pointsWhenKilled: 10
+  damage: 10
+  attackRange: 2
+  startupTime: 0.3
+  endingLag: 0.4
+  hudActiveOnSpawn: 0
+  hudActiveTime: 3
+  distToTarget: 0
 --- !u!95 &1914192949302805603
 Animator:
   serializedVersion: 3

@@ -99,7 +99,8 @@ public class Gun : MonoBehaviour
             targetPos = hitInfo.point;
             if (hitInfo.transform.GetComponent<HitDetector>() != null)
             {
-                hitInfo.transform.GetComponent<HitDetector>().Hit(damage);
+                //hitInfo.transform.GetComponent<HitDetector>().Hit(damage);
+                hitInfo.transform.GetComponent<HitDetector>().hit.Invoke(damage, hitInfo.transform.name);
             }
         }
         laser.SetPosition(1, targetPos);
@@ -113,7 +114,8 @@ public class Gun : MonoBehaviour
     public void ShootProjectile()
     {
         GameObject tmp = Instantiate(projectile);
-        tmp.transform.position = barrel.transform.position;
+        tmp.transform.position = barrel.transform.position + transform.forward * 0.5f;
+        tmp.GetComponent<ImpactDamageObject>().dontHit.Add("Player");
         tmp.GetComponent<Rigidbody>().AddForce(transform.forward * projSpeed, ForceMode.VelocityChange);
         capacity -= projCost;
         elapsedShootTime = 0;

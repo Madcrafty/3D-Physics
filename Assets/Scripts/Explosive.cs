@@ -66,7 +66,8 @@ public class Explosive : MonoBehaviour
     {
         if (other.GetComponent<HitDetector>() != null)
         {
-            other.GetComponent<HitDetector>().Hit(damage);
+            //other.GetComponent<HitDetector>().Hit(damage);
+            other.GetComponent<HitDetector>().hit.Invoke(damage, other.name);
         }
     }
 }

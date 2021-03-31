@@ -22,5 +22,6 @@ public class Convayor : MonoBehaviour
         // Add a WORLD force to the other objects
         // Ignore the mass of the other objects so they all go the same speed (ForceMode.Acceleration)
         otherThing.rigidbody.AddForce(direction, ForceMode.Acceleration);
+        //otherThing.rigidbody.MovePosition(otherThing.transform.position + direction);
     }
 }
