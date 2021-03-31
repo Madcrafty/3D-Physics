@@ -81,6 +81,9 @@ namespace Scripts.Movement
             m_playerJumpStarted = true;
 
             #endregion
+            #region ListenForHits
+            transform.GetComponent<HitDetector>().hit.AddListener(TakeDamage);
+            #endregion
         }
 
         private void Update()
@@ -171,6 +174,14 @@ namespace Scripts.Movement
             base.TakeDamage(damage);
             elapsedHitTime = 0;
         }
+<<<<<<< HEAD
+=======
+        public override void TakeDamage(float damage, string nameOfHitPart)
+        {
+            base.TakeDamage(damage, nameOfHitPart);
+            elapsedHitTime = 0;
+        }
+>>>>>>> 924804c897c2941fcede2015c8672039fa3c1223
         protected override void Die()
         {
             base.Die();

@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 {
     public TextMeshProUGUI scoreBoard;
     public TextMeshProUGUI FPS;
+<<<<<<< HEAD
     public float m_refreshTime = 0.5f;
     //public bool debuging;
 
@@ -24,6 +25,18 @@ public class GameManager : MonoBehaviour
     float m_lastFramerate = 0.0f;
     
 
+=======
+    public float fpsRefreshRate;
+    private string scoreBoardBaseText;
+    private string fpsBaseText;
+    private float timer;
+    private float avgFramerate;
+
+    private int score;
+    private int winScreenIndex = 2;
+    private int gameOverScreenIndex = 3;
+    
+>>>>>>> 924804c897c2941fcede2015c8672039fa3c1223
     // Start is called before the first frame update
     void Start()
     {
@@ -52,6 +65,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+<<<<<<< HEAD
         if (m_timeCounter < m_refreshTime)
         {
             m_timeCounter += Time.deltaTime;
@@ -65,6 +79,17 @@ public class GameManager : MonoBehaviour
             m_timeCounter = 0.0f;
             FPS.text = fpsBaseText + (int)m_lastFramerate;
         }
+=======
+        float timelapse = Time.smoothDeltaTime;
+        timer = timer <= 0 ?  1/fpsRefreshRate : timer -= timelapse;
+
+        if (timer <= 0)
+        {
+            avgFramerate = (int)(1f / timelapse);
+            FPS.text = string.Format(fpsBaseText, avgFramerate.ToString());
+        }
+
+>>>>>>> 924804c897c2941fcede2015c8672039fa3c1223
     }
 
     public void AddScore(int ammount)

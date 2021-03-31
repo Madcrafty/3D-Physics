@@ -21,6 +21,7 @@ public class Entity : MonoBehaviour
         ragdoll = GetComponent<Ragdoll>();
         if (ragdoll.rigidbodies != null && ragdoll.rigidbodies.Count > 0)
         {
+<<<<<<< HEAD
             foreach (Rigidbody rb in ragdoll.rigidbodies)
             {
                 rb.gameObject.AddComponent<HitDetector>();
@@ -29,6 +30,9 @@ public class Entity : MonoBehaviour
         else
         {
             gameObject.AddComponent<HitDetector>();
+=======
+            rb.gameObject.AddComponent<HitDetector>().hit.AddListener(TakeDamage);
+>>>>>>> 924804c897c2941fcede2015c8672039fa3c1223
         }
         hp = maxHealth;
         RagdollState(false);
@@ -36,6 +40,21 @@ public class Entity : MonoBehaviour
     public virtual void TakeDamage(float damage)
     {
         hp -= damage;
+        if (hp <= 0)
+        {
+            Die();
+        }
+    }
+    public virtual void TakeDamage(float damage, string nameOfHitPart)
+    {
+        if (nameOfHitPart == weakpointName)
+        {
+            hp -= damage * weakpointMod;
+        }
+        else
+        {
+            hp -= damage;
+        }
         if (hp <= 0)
         {
             Die();

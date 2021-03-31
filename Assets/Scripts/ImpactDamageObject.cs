@@ -5,6 +5,7 @@ using UnityEngine;
 public class ImpactDamageObject : MonoBehaviour
 {
     public Rigidbody rb;
+    public List<string> dontHit;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,17 +22,32 @@ public class ImpactDamageObject : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.GetComponent<HitDetector>() != null)
+        if (!OnDontHitList(collision.transform.name))
         {
-            collision.transform.GetComponent<HitDetector>().Hit((int)Damage());
-        }
-        else if (collision.transform.GetComponent<Entity>() != null)
-        {
-            collision.transform.GetComponent<Entity>().TakeDamage(Damage());
+            if (collision.transform.GetComponent<HitDetector>() != null)
+            {
+                //collision.transform.GetComponent<HitDetector>().Hit((int)Damage());
+                collision.transform.GetComponent<HitDetector>().hit.Invoke(Damage(collision.transform.GetComponent<Rigidbody>()), collision.transform.name);
+            }
+            else if (collision.transform.GetComponent<Entity>() != null)
+            {
+                collision.transform.GetComponent<Entity>().TakeDamage(Damage(collision.transform.GetComponent<Rigidbody>()));
+            }
         }
     }
-    float Damage()
+    float Damage(Rigidbody other_body)
     {
-        return Vector3.Magnitude(rb.velocity) * rb.mass;
+        return Mathf.Abs(Vector3.Magnitude(rb.velocity - other_body.velocity) * rb.mass);
+    }
+    bool OnDontHitList(string a_name)
+    {
+        foreach (string name in dontHit)
+        {
+            if (name == a_name)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
