@@ -5,5 +5,5 @@ using UnityEngine.Events;
 
 public class HitDetector : MonoBehaviour
 {
-    public UnityEvent<float, string> hit = new UnityEvent<float, string>();
+    public UnityEvent<float, float, string, Vector3> hit = new UnityEvent<float, float, string, Vector3>();
 }

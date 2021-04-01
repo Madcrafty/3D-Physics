@@ -5,6 +5,7 @@ using UnityEngine;
 public class Explosive : MonoBehaviour
 {
     public int damage;
+    public float knockback = 1;
     public float radius;
     public float detonationTime;
     [Tooltip("Time for explosive to play wind-up effects")]
@@ -67,7 +68,7 @@ public class Explosive : MonoBehaviour
         if (other.GetComponent<HitDetector>() != null)
         {
             //other.GetComponent<HitDetector>().Hit(damage);
-            other.GetComponent<HitDetector>().hit.Invoke(damage, other.name);
+            other.GetComponent<HitDetector>().hit.Invoke(damage, knockback, other.name, transform.position);
         }
     }
 }

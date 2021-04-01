@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ImpactDamageObject : MonoBehaviour
 {
+    public float knockbackBoost = 1;
     public Rigidbody rb;
     public List<string> dontHit;
     // Start is called before the first frame update
@@ -26,18 +27,18 @@ public class ImpactDamageObject : MonoBehaviour
         {
             if (collision.transform.GetComponent<HitDetector>() != null)
             {
-                //collision.transform.GetComponent<HitDetector>().Hit((int)Damage());
-                collision.transform.GetComponent<HitDetector>().hit.Invoke(Damage(collision.transform.GetComponent<Rigidbody>()), collision.transform.name);
+                //collision.transform.GetComponent<HitDetector>().hit.Invoke(Damage(), knockbackBoost, collision.transform.name, collision.transform.position);
+                collision.transform.GetComponent<HitDetector>().hit.Invoke(Damage(), Damage() * knockbackBoost, collision.transform.name, collision.transform.position);
             }
             else if (collision.transform.GetComponent<Entity>() != null)
             {
-                collision.transform.GetComponent<Entity>().TakeDamage(Damage(collision.transform.GetComponent<Rigidbody>()));
+                collision.transform.GetComponent<Entity>().TakeDamage(Damage());
             }
         }
     }
-    float Damage(Rigidbody other_body)
+    float Damage()
     {
-        return Mathf.Abs(Vector3.Magnitude(rb.velocity - other_body.velocity) * rb.mass);
+        return Vector3.Magnitude(rb.velocity) * rb.mass;
     }
     bool OnDontHitList(string a_name)
     {

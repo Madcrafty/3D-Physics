@@ -2086,11 +2086,13 @@ MonoBehaviour:
   maxHealth: 100
   weakpointName: Head
   weakpointMod: 2
+  knockbackBoost: 2
   target: {fileID: 0}
   speed: 1
-  pathUpdateRate: 2
+  pathUpdateRate: 1
   pointsWhenKilled: 10
   damage: 10
+  knockback: 0.1
   attackRange: 2
   startupTime: 0.3
   endingLag: 0.4

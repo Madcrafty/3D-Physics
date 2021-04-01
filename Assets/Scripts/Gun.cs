@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class Gun : MonoBehaviour
 {
     public int damage = 20;
+    public float knockback = 1;
     public float shotCost = 5.0f;
     public GameObject projectile = null;
     public float projCost = 50.0f;
@@ -38,7 +38,6 @@ public class Gun : MonoBehaviour
         barrel = transform.GetChild(2).GetComponent<Collider>();
         originPoint = barrel.bounds.center;
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -100,7 +99,7 @@ public class Gun : MonoBehaviour
             if (hitInfo.transform.GetComponent<HitDetector>() != null)
             {
                 //hitInfo.transform.GetComponent<HitDetector>().Hit(damage);
-                hitInfo.transform.GetComponent<HitDetector>().hit.Invoke(damage, hitInfo.transform.name);
+                hitInfo.transform.GetComponent<HitDetector>().hit.Invoke(damage, knockback, hitInfo.transform.name, hitInfo.point);
             }
         }
         laser.SetPosition(1, targetPos);

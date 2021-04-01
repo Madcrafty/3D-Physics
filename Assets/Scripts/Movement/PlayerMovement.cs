@@ -174,14 +174,11 @@ namespace Scripts.Movement
             base.TakeDamage(damage);
             elapsedHitTime = 0;
         }
-<<<<<<< HEAD
-=======
-        public override void TakeDamage(float damage, string nameOfHitPart)
+        public override void TakeDamage(float damage, float knockback, string nameOfHitPart, Vector3 position)
         {
-            base.TakeDamage(damage, nameOfHitPart);
+            base.TakeDamage(damage, knockback, nameOfHitPart, position);
             elapsedHitTime = 0;
         }
->>>>>>> 924804c897c2941fcede2015c8672039fa3c1223
         protected override void Die()
         {
             base.Die();

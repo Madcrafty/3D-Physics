@@ -11,6 +11,9 @@ public class Entity : MonoBehaviour
     public string weakpointName;
     public float weakpointMod = 1;
 
+    [Header(header: "Knockback Boost (for entities with ragdols)")]
+    public float knockbackBoost = 1;
+
     protected float hp;
     protected Ragdoll ragdoll;
     protected GameManager gm;
@@ -19,20 +22,10 @@ public class Entity : MonoBehaviour
     {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         ragdoll = GetComponent<Ragdoll>();
-        if (ragdoll.rigidbodies != null && ragdoll.rigidbodies.Count > 0)
+        foreach (Rigidbody rb in ragdoll.rigidbodies)
         {
-<<<<<<< HEAD
-            foreach (Rigidbody rb in ragdoll.rigidbodies)
-            {
-                rb.gameObject.AddComponent<HitDetector>();
-            }
-        }
-        else
-        {
-            gameObject.AddComponent<HitDetector>();
-=======
             rb.gameObject.AddComponent<HitDetector>().hit.AddListener(TakeDamage);
->>>>>>> 924804c897c2941fcede2015c8672039fa3c1223
+            rb.gameObject.AddComponent<AddForceHit>().knockbackBoost = knockbackBoost;
         }
         hp = maxHealth;
         RagdollState(false);
@@ -45,7 +38,7 @@ public class Entity : MonoBehaviour
             Die();
         }
     }
-    public virtual void TakeDamage(float damage, string nameOfHitPart)
+    public virtual void TakeDamage(float damage, float knockback, string nameOfHitPart, Vector3 position)
     {
         if (nameOfHitPart == weakpointName)
         {

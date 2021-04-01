@@ -9854,6 +9854,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
+  knockback: 15
   radius: 25
   detonationTime: 2.5
   windUpTime: 0.7
@@ -10001,5 +10002,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a23d7a0de1d1214ab03884731a68543, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  knockbackBoost: 1
   rb: {fileID: 410643825809150296}
   dontHit: []
